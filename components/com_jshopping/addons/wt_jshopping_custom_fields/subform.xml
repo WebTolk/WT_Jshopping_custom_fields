@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset label="Тип поля" name="field_type">
+		<field type="list"
+			   name="field_type"
+			   label="Тип поля"
+			   description="Выберите тип поля - текстовое, календарь, изображение, телефон и т.д."
+			   class="form-select-sm">
+			<option value="text">text</option>
+			<option value="number">number</option>
+			<option value="tel">tel</option>
+			<option value="email">email</option>
+			<option value="url">link</option>
+			<option value="textarea">area</option>
+			<option value="editor">editor</option>
+			<option value="radio">radio</option>
+			<option value="checkbox">checkbox</option>
+			<option value="select">select</option>
+			<option value="combobox">combobox</option>
+			<option value="media">image</option>
+			<option value="calendar">calendar</option>
+			<option value="color">color</option>
+		</field>
+		<field type="text"
+			   name="values"
+			   label="Значения"
+			   description="ПЕРЕСМОТРЕТЬ?"
+			   showon="field_type:radio[OR]field_type:checkbox[OR]field_type:select"
+			   class="from-control-sm"/>
+	</fieldset>
+	<fieldset label="Заголовки" name="headers">
+		<field type="text"
+			   name="field_admin_label"
+			   label="Заголовок в админ панели"
+			   description="Этот заголовок будет виден только Вам в панели администратора"
+			   class="from-control-sm"
+			   required="required"/>
+		<field type="text"
+			   name="field_front_label"
+			   label="Заголовок на сайте"
+			   description="Этот заголовок будет виден на сайте посетителям"
+			   class="from-control-sm"/>
+	</fieldset>
+	<fieldset label="Позиции в шаблоне JoomShopping" name="positions">
+		<field type="list"
+			   name="position_in_product"
+			   label="Позиция вывода в товаре"
+			   description="Выберите где отображать данные поля"
+			   class="form-select-sm">
+			<option value="none">none</option>
+			<option value="_tmp_product_html_start">_tmp_product_html_start</option>
+			<option value="_tmp_product_html_before_image">_tmp_product_html_before_image</option>
+			<option value="_tmp_product_html_body_image">_tmp_product_html_body_image</option>
+			<option value="_tmp_product_html_after_image">_tmp_product_html_after_image</option>
+			<option value="_tmp_product_html_before_image_thumb">_tmp_product_html_before_image_thumb</option>
+			<option value="_tmp_product_html_after_image_thumb">_tmp_product_html_after_image_thumb</option>
+			<option value="_tmp_product_html_after_video">_tmp_product_html_after_video</option>
+			<option value="_tmp_product_html_before_atributes">_tmp_product_html_before_atributes</option>
+			<option value="_tmp_product_html_after_atributes">_tmp_product_html_after_atributes</option>
+			<option value="_tmp_product_html_after_freeatributes">_tmp_product_html_after_freeatributes</option>
+			<option value="_tmp_product_html_before_price">_tmp_product_html_before_price</option>
+			<option value="_tmp_var_bottom_price">_tmp_var_bottom_price</option>
+			<option value="_tmp_var_bottom_allprices">_tmp_var_bottom_allprices</option>
+
+			<option value="_tmp_var_price_ext">_tmp_var_price_ext</option>
+			<option value="_tmp_var_old_price_ext">_tmp_var_old_price_ext</option>
+			<option value="_tmp_var_bottom_price">_tmp_var_bottom_price</option>
+			<option value="_tmp_var_bottom_allprices">_tmp_var_bottom_allprices</option>
+
+			<option value="_tmp_product_html_after_ef">_tmp_product_html_after_ef</option>
+			<option value="_tmp_product_html_before_buttons">_tmp_product_html_before_buttons</option>
+			<option value="_tmp_product_html_buttons">_tmp_product_html_buttons</option>
+			<option value="_tmp_product_html_after_buttons">_tmp_product_html_after_buttons</option>
+			<option value="_tmp_product_html_before_demofiles">_tmp_product_html_before_demofiles</option>
+			<option value="_tmp_product_html_before_review">_tmp_product_html_before_review</option>
+			<option value="_tmp_product_review_before_submit">_tmp_product_review_before_submit</option>
+			<option value="_tmp_product_html_before_related">_tmp_product_html_before_related</option>
+			<option value="_tmp_product_html_end">_tmp_product_html_end</option>
+			<option value="custom_position">custom_position</option>
+		</field>
+		<field type="text"
+			   name="position_in_product_custom_position"
+			   label="Название позиции"
+			   description="Название пользовательской позиции в шаблоне. Кастомную позицию выводим через $product->my_custom_position_name или $this->product->my_custom_position_name"
+			   showon="position_in_product:custom_position"
+			   class="form-control-sm"/>
+
+		<field type="list"
+			   name="position_in_category"
+			   label="Позиция вывода в категории"
+			   description="Выберите где отображать данные поля в списке товаров (категория, список производителей и т.д.)"
+			   class="form-select-sm">
+			<option value="none">none</option>
+			<option value="_tmp_var_start">_tmp_var_start</option>
+			<option value="_tmp_var_image_block">_tmp_var_image_block</option>
+			<option value="_tmp_var_bottom_foto">_tmp_var_bottom_foto</option>
+			<option value="_tmp_var_bottom_old_price">_tmp_var_bottom_old_price</option>
+			<option value="_tmp_var_bottom_price">_tmp_var_bottom_price</option>
+			<option value="_tmp_var_top_buttons">_tmp_var_top_buttons</option>
+			<option value="_tmp_var_buttons">_tmp_var_buttons</option>
+			<option value="_tmp_var_bottom_buttons">_tmp_var_bottom_buttons</option>
+			<option value="_tmp_var_end">_tmp_var_end</option>
+			<option value="custom_position">custom_position</option>
+		</field>
+		<field type="text"
+			   name="position_in_category_custom_position"
+			   label="Название позиции"
+			   description="Название пользовательской позиции в шаблоне. Будет выводиться как echo $this->ваша_позиция"
+			   showon="position_in_category:custom_position"
+			   class="from-control-sm"/>
+		<field type="radio"
+			   name="enable_field_data_in_custom_object"
+			   label="Программный доступ в шаблоне"
+			   description="Помещать данные поля в объект $this->wt_jshopping_custom_fields в объект категории или товара?"
+			   class="btn-group btn-group-yesno" default="0"
+			   >
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+	</fieldset>
+	<fieldset label="Разное" name="other">
+		<field type="filelist"
+			   name="layout_product"
+			   label="Макет вывода в товаре"
+			   description="Вы можете создавать свои макеты вывода этого поля"
+			   directory="components/com_jshopping/addons/wt_jshopping_custom_fields/layouts/product"
+			   fileFilter="php"
+			   stripext="true"
+			   hide_none="true"
+			   hide_default="true"
+			   class="form-select-sm"/>
+		<field type="filelist"
+			   name="layout_productlist"
+			   label="Макет вывода в списке (категории) товаров"
+			   description="Вы можете создавать свои макеты вывода этого поля"
+			   directory="components/com_jshopping/addons/wt_jshopping_custom_fields/layouts/productlist"
+			   fileFilter="php"
+			   stripext="true"
+			   hide_none="true"
+			   hide_default="true"
+			   class="form-select-sm"/>
+		<field type="text"
+			   name="ordering"
+			   label="Порядок"
+			   class="from-control-sm"/>
+		<field type="textarea"
+			   name="field_note"
+			   label="Примечание"
+			   hint="Примечание, описывающее что это за поле, где и как выводится"
+			   class="from-control-sm"/>
+	</fieldset>
+</form>

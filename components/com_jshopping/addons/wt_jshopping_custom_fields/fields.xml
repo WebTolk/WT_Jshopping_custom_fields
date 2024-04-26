@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<form>
+	<fieldset name="wt_jshopping_custom_fields_products" label="Кастомные поля в товарах">
+		<field name="wt_jshopping_custom_fields_products"
+			   label="Поля в товарах"
+			   type="subform"
+			   layout="joomla.form.field.subform.repeatable-table"
+			   formsource="components/com_jshopping/addons/wt_jshopping_custom_fields/subform.xml"
+			   multiple="true"
+			   groupByFieldset="true"
+			   parentclass="stack"
+		/>
+		<field name="wt_jshopping_custom_fields_categories"
+			   label="Поля в категориях"
+			   type="subform"
+			   layout="joomla.form.field.subform.repeatable-table"
+			   formsource="components/com_jshopping/addons/wt_jshopping_custom_fields/subform_category.xml"
+			   multiple="true"
+			   groupByFieldset="true"
+			   parentclass="stack"
+		/>
+	</fieldset>
+
+</form>
