@@ -33,23 +33,21 @@ class Wt_jshopping_custom_fields extends CMSPlugin implements SubscriberInterfac
     }
 
     /**
-     * @param Event $event
+     * Отображает пользовательские поля для данной категории и дочерних категорий
+     * @param &$view object Объект отображения категории
      * @return void
-     * @since 1.0.0
+     * @since 1.1.0
      */
-    public function onBeforeDisplayCategoryView(Event $event): void
+    private function RenderCategoryCustomFields(&$view): void
     {
-        /** @var $view object */
-        $view = $event->getArgument(0);
-
-        $view->wt_jshopping_custom_fields = []; // Для кастомного рендера в шаблоне
         $lang = $this->getApplication()->getLanguage()->getLocale();
         $current_lang_locale = $lang[8]; // "ru", "en" etc
         $db = Factory::getContainer()->get(DatabaseInterface::class);
-
         $addon = \JSFactory::getTable('addon');
         $addon->loadAlias('wt_jshopping_custom_fields');
         $addon_params = (object)$addon->getParams();
+
+        $view->wt_jshopping_custom_fields = []; // Для кастомного рендера в шаблоне
 
         // Собираем массив полей для категории
         $fields_params = [];
@@ -67,11 +65,15 @@ class Wt_jshopping_custom_fields extends CMSPlugin implements SubscriberInterfac
          * Получаем список значений полей только на те id, которые в данный момент отображаются
          */
         if (!empty($view->category->category_id) || !empty($view->categories)) {
-            $category_ids = [$view->category->category_id];
+            $category_ids = [];
+            // Добавляем собственный id категории
+            if (!empty($view->category->category_id))
+            {
+                $category_ids[] = $view->category->category_id;
+            }
             foreach ($view->categories as $category_id) {
                 $category_ids[] = $category_id->category_id;
             }
-
 
             $query = $db->getQuery(true);
             $query->select('*')
@@ -182,6 +184,19 @@ class Wt_jshopping_custom_fields extends CMSPlugin implements SubscriberInterfac
     /**
      * @param Event $event
      * @return void
+     * @since 1.0.0
+     */
+    public function onBeforeDisplayCategoryView(Event $event): void
+    {
+        /** @var $view object */
+        $view = $event->getArgument(0);
+
+        $this->RenderCategoryCustomFields($view);
+    }
+
+    /**
+     * @param Event $event
+     * @return void
      * @throws \Exception
      * @since 1.0.0
      */
@@ -190,141 +205,14 @@ class Wt_jshopping_custom_fields extends CMSPlugin implements SubscriberInterfac
         $view = $event->getArgument(0);
         $product_list = $event->getArgument(1);
 
-        $view->wt_jshopping_custom_fields = []; // Для кастомного рендера в шаблоне
         $lang = $this->getApplication()->getLanguage()->getLocale();
         $current_lang_locale = $lang[8]; // "ru", "en" etc
         $db = Factory::getContainer()->get(DatabaseInterface::class);
-
         $addon = \JSFactory::getTable('addon');
         $addon->loadAlias('wt_jshopping_custom_fields');
         $addon_params = (object)$addon->getParams();
 
-        // Собираем массив полей для категории
-        $fields_params = [];
-        foreach ($addon_params->wt_jshopping_custom_fields_categories as $field_param) {
-            $field = [
-                'field_front_label' => $field_param['field_front_label'],
-                'position' => $field_param['position'],
-                'layout_category' => $field_param['layout_category'],
-                'layout_parent_category' => $field_param['layout_parent_category'],
-                'enable_field_data_in_custom_object' => $field_param['enable_field_data_in_custom_object'],
-            ];
-            $fields_params[OutputFilter::stringURLSafe($field_param['field_admin_label'] . '_' . $current_lang_locale)] = $field;
-        }
-        /**
-         * Получаем список значений полей только на те id, которые в данный момент отображаются
-         */
-        if (!empty($view->category->category_id) || !empty($view->categories)) {
-            $category_ids = [$view->category->category_id];
-            foreach ($view->categories as $category_id) {
-                $category_ids[] = $category_id->category_id;
-            }
-
-
-            $query = $db->getQuery(true);
-            $query->select('*')
-                ->from($db->quoteName('#__jshopping_custom_fields_values'))
-                ->where($db->quoteName('category_id') . ' IN(' . implode(',', $category_ids) . ')');
-
-            $db->setQuery($query);
-            $list_fields = $db->loadObjectList(); // данные кастомных полей для категории и подкатегорий
-
-
-            // Выбираем поля для текущей категории
-            foreach ($list_fields as $field) {
-
-                if ($view->category->category_id == $field->category_id) {
-                    $field_values = json_decode($field->field_value);
-                    if ($field_values->$current_lang_locale) {
-
-                        foreach ($field_values->$current_lang_locale as $key => $field_value) {
-                            /**
-                             * Подключаем лейауты для своих макетов вывода
-                             */
-                            $layout_id = $fields_params[$key]['layout_category'] ? $fields_params[$key]['layout_category'] : 'default';
-                            $layout = new FileLayout($layout_id);
-                            $layout->addIncludePath('components/com_jshopping/addons/wt_jshopping_custom_fields/layouts/productlist');
-                            $label = $fields_params[$key]['field_front_label'];
-
-                            // Добавляем параметры поля к каждому значению
-                            if (!empty($field_value) &&
-                                $fields_params[$key]['position'] &&
-                                $fields_params[$key]['position'] != 'none') {
-
-
-                                if ($fields_params[$key]['position'] == 'custom_position') {
-                                    $position = $fields_params[$key]['custom_position'];
-                                } else {
-                                    $position = $fields_params[$key]['position'];
-                                }
-
-                                $view->$position .= $layout->render([
-                                    'label' => $label,
-                                    'field_value' => $field_value
-                                ]);
-
-                            }
-                            // Для программного доступа в шаблоне
-                            if ($fields_params[$key]['enable_field_data_in_custom_object'] == true) {
-                                $view->wt_jshopping_custom_fields['category'][$key] = [
-                                    'label' => $label,
-                                    'field_value' => $field_value
-                                ];
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            if ($list_fields) {
-
-                foreach ($view->categories as $category) {
-                    foreach ($list_fields as $field) {
-                        if ($category->category_id == $field->category_id) {
-                            $field_values = json_decode($field->field_value);
-                            if ($field_values->$current_lang_locale) {
-
-                                foreach ($field_values->$current_lang_locale as $key => $field_value) {
-                                    /**
-                                     * Подключаем лейауты для своих макетов вывода
-                                     */
-                                    $layout_id = $fields_params[$key]['layout_parent_category'] ? $fields_params[$key]['layout_parent_category'] : 'default';
-                                    $layout = new FileLayout($layout_id);
-                                    $layout->addIncludePath('components/com_jshopping/addons/wt_jshopping_custom_fields/layouts/productlist');
-                                    $label = $fields_params[$key]['field_front_label'];
-                                    // Добавляем параметры поля к каждому значению
-                                    if (!empty($field_value) &&
-                                        $fields_params[$key]['position'] &&
-                                        $fields_params[$key]['position'] != 'none') {
-
-
-                                        if ($fields_params[$key]['position'] == 'custom_position') {
-                                            $position = $fields_params[$key]['custom_position'];
-                                        } else {
-                                            $position = $fields_params[$key]['position'];
-                                        }
-
-                                        $category->$position .= $layout->render([
-                                            'label' => $label,
-                                            'field_value' => $field_value
-                                        ]);
-
-                                    }
-                                    // Для программного доступа в шаблоне
-                                    if ($fields_params[$key]['enable_field_data_in_custom_object']) {
-                                        $view->wt_jshopping_custom_fields['subcategories'][$category->category_id][$key] = [
-                                            'label' => $label,
-                                            'field_value' => $field_value
-                                        ];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $this->RenderCategoryCustomFields($view);
 
         // Собираем массив полей для товаров
         $fields_params = [];
@@ -356,6 +244,7 @@ class Wt_jshopping_custom_fields extends CMSPlugin implements SubscriberInterfac
         $query->select('*')
             ->from($db->quoteName('#__jshopping_custom_fields_values'))
             ->where($db->quoteName('product_id') . ' IN(' . implode(',', $product_ids) . ')');
+
         $db->setQuery($query);
         $list_fields = $db->loadObjectList();
 
@@ -416,9 +305,7 @@ class Wt_jshopping_custom_fields extends CMSPlugin implements SubscriberInterfac
     {
         $view = $event->getArgument(0);
 
-        $view->wt_jshopping_custom_fields = ['test', 'test2'];
-        print_r($view->wt_jshopping_custom_fields);
-
+        $view->wt_jshopping_custom_fields = [];
         $product_id = $view->product->product_id;
         $lang = $this->getApplication()->getLanguage()->getLocale();
         $current_lang_locale = $lang[8]; // "ru", "en" etc
@@ -447,8 +334,8 @@ class Wt_jshopping_custom_fields extends CMSPlugin implements SubscriberInterfac
         $query->select('*')
             ->from($db->quoteName('#__jshopping_custom_fields_values'))
             ->where($db->quoteName('product_id') . ' = ' . $db->quote($product_id));
-        $db->setQuery($query);
 
+        $db->setQuery($query);
         $list_fields = $db->loadObject();
 
         if ($list_fields) {
