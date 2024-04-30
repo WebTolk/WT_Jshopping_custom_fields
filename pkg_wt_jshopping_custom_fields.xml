@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" method="upgrade">
+    <name>Package - Wt JShopping Custom Fields</name>
+    <author>Sergey Tolkachyov</author>
+    <creationDate>April 2024</creationDate>
+    <copyright>Copyright (C) 2024 Sergey Tolkachyov. All rights reserved.</copyright>
+    <packagename>wt_jshopping_custom_fields</packagename>
+    <version>1.1.0</version>
+    <url>https://web-tolk.ru/</url>
+    <packager>Sergey Tolkachyov</packager>
+    <packagerurl>https://web-tolk.ru/</packagerurl>
+    <description>Packet - Wt JShopping Custom Fields</description>
+    <license>GNU GPL 3.0</license>
+    <scriptfile>pkg_script.php</scriptfile>
+    <files>
+        <folder method="upgrade" type="plugin" id="wt_jshopping_custom_fields" group="jshoppingadmin">jshoppingadmin/wt_jshopping_custom_fields</folder>
+        <folder method="upgrade" type="plugin" id="wt_jshopping_custom_fields" group="jshoppingproducts">jshoppingproducts/wt_jshopping_custom_fields</folder>
+        <folder method="upgrade" type="file" id="wt_jshopping_custom_fields_addon">wt_jshopping_custom_fields_addon</folder>
+    </files>
+</extension>

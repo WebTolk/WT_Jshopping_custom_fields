@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="file" method="upgrade">
+    <name>JoomShopping addon for Wt JShopping Custom Fields</name>
+    <creationDate>April 2024</creationDate>
+    <author>Sergey Tolkachyov</author>
+    <copyright>Copyright (C) 2024 Sergey Tolkachyov. All rights reserved.</copyright>
+    <authorEmail>info@web-tolk.ru</authorEmail>
+    <authorUrl>https://web-tolk.ru</authorUrl>
+    <version>1.1.0</version>
+    <license>GNU GPL 3.0</license>
+    <element>wt_jshopping_custom_fields_addon</element>
+    <description>JoomShopping addon for Wt JShopping Custom Fields</description>
+    <fileset>
+        <files>
+            <folder>components</folder>
+        </files>
+    </fileset>
+</extension>
